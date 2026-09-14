@@ -1,0 +1,3 @@
+Synthetic transcript written for this package; no real lecturer is quoted.
+Both variables refer to the same Counter object. Changing its value through b is visible through a.
+If you now assign a new Counter to b, a still refers to the original Counter. Reassigning a variable is different from changing the object that it points to.

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Canvas 双语每周学习"
+  short_description: "Download Canvas materials and build weekly bilingual lessons"
+  default_prompt: "Use $canvas-weekly-bilingual-study to collect my Canvas course materials and build detailed weekly Chinese–English HTML lessons from slides and lecture transcripts."

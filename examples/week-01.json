@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "course": {"zh": "演示课程：对象与引用", "en": "Demonstration course: objects and references"},
+  "title": {"zh": "引用复制与对象状态", "en": "Reference copying and object state"},
+  "week": 1,
+  "status": "complete",
+  "reviewed": true,
+  "missing": [],
+  "sources": [
+    {"id": "slides", "kind": "slides", "title": {"zh": "原创演示 slides", "en": "Original synthetic slides"}, "path": "demo-slides.txt", "units": ["line 1", "line 2", "line 3"]},
+    {"id": "transcript", "kind": "transcript", "title": {"zh": "原创演示 transcript", "en": "Original synthetic transcript"}, "path": "demo-transcript.txt", "units": ["line 1", "line 2", "line 3"]}
+  ],
+  "lectures": [{"date": "2026-01-05", "title": {"zh": "虚构课堂：两个变量与一个对象", "en": "Fictional lecture: two variables and one object"}, "sources": ["slides", "transcript"]}],
+  "goals": [{"zh": "区分复制引用、修改对象和重新赋值，并解释每一步对程序输出的影响。", "en": "Distinguish reference copying, object mutation and reassignment, and explain how each changes program output."}],
+  "sections": [
+    {"id": "shared-object", "title": {"zh": "两个变量为什么读到同一个值", "en": "Why two variables see the same value"}, "blocks": [
+      {"kind": "slide", "text": {"zh": "本例所有材料均为原创演示，并非真实课程记录。a 与 b 是两个变量，但 b = a 复制的是 a 所保存的引用。程序只执行了一次 new Counter()，因此只有一个 Counter 对象。通过 b 把 value 改为 3 后，通过 a 访问的是同一个字段，所以打印结果为 3。", "en": "All materials in this example are synthetic, not records of a real course. The variables a and b are distinct, but b = a copies the reference stored in a. Only one new Counter() expression has been evaluated, so there is one Counter object. Setting value to 3 through b updates the same field that is accessed through a, so the printed result is 3."}, "code": "class Counter { int value; }\n\nclass Demo {\n    public static void main(String[] args) {\n        Counter a = new Counter();\n        Counter b = a;\n        b.value = 3;\n        System.out.println(a.value); // 3\n    }\n}", "citations": [{"source": "slides", "locator": "line 1"}, {"source": "slides", "locator": "line 2"}, {"source": "slides", "locator": "line 3"}, {"source": "transcript", "locator": "line 1"}, {"source": "transcript", "locator": "line 2"}]},
+      {"kind": "lecturer_addition", "title": {"zh": "演示 transcript 的补充：重新赋值", "en": "Synthetic transcript addition: reassignment"}, "text": {"zh": "演示 transcript 进一步区分了重新赋值与修改对象。如果接着执行 b = new Counter()，b 会保存新对象的引用，但 a 不会跟着改变，它仍引用原来的对象。因此 a.value 仍是 3。这个区别比只记住“两个变量指向同一个对象”更有用：每次都判断当前语句改变的是变量中保存的引用，还是对象中的字段。", "en": "The synthetic transcript additionally distinguishes reassignment from mutation. If b = new Counter() is executed next, b stores a reference to a new object, while a remains unchanged and still refers to the original object. Consequently a.value remains 3. This distinction is more useful than merely remembering that two variables refer to one object: for each statement, identify whether it changes the reference stored in a variable or a field stored in an object."}, "citations": [{"source": "transcript", "locator": "line 3"}]},
+      {"kind": "teaching_expansion", "title": {"zh": "用输出检查理解", "en": "Check understanding through the output"}, "text": {"zh": "在上面的输出之后，执行 b = new Counter(); b.value = 8;。接着分别打印 a.value 和 b.value，会得到什么？先画出两条引用指向的对象，再回答。", "en": "After the output above, execute b = new Counter(); b.value = 8;. What will be printed if a.value and b.value are then printed separately? First draw the objects to which the two references point, then answer."}, "answer": {"zh": "分别得到 3 和 8。重新赋值只改变了 b，a 仍指向 value 为 3 的原对象。新 Counter 的 int 字段初始为 0，再被 b.value = 8 改为 8；这次修改没有触及原对象。", "en": "The outputs are 3 and 8 respectively. Reassignment changed only b; a still refers to the original object with value 3. The int field in the new Counter initially has value 0 and is then changed to 8 by b.value = 8. That mutation does not affect the original object."}, "citations": []}
+    ]}
+  ],
+  "coverage": [
+    {"source": "slides", "locator": "line 1", "section": "shared-object"},
+    {"source": "slides", "locator": "line 2", "section": "shared-object"},
+    {"source": "slides", "locator": "line 3", "section": "shared-object"},
+    {"source": "transcript", "locator": "line 1", "section": "shared-object"},
+    {"source": "transcript", "locator": "line 2", "section": "shared-object"},
+    {"source": "transcript", "locator": "line 3", "section": "shared-object"}
+  ],
+  "glossary": [{"term": {"zh": "引用", "en": "Reference"}, "definition": {"zh": "变量保存的对象引用可用于访问对象。复制这个引用不会自动复制对象。", "en": "An object reference stored in a variable can be used to access the object. Copying the reference does not automatically copy the object."}}]
+}

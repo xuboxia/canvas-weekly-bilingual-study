@@ -1,0 +1,3 @@
+Synthetic slides written for this package; not university teaching material.
+References: assigning an object variable copies the reference, not the object.
+Counter a = new Counter(); Counter b = a; b.value = 3; prints a.value as 3.
