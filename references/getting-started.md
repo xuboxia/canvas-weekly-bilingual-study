@@ -2,6 +2,12 @@
 
 This skill uses the capabilities of the AI agent that loads it. It does not include a model subscription, Canvas login, browser access or API credentials.
 
+## Automatic collection / 自动抓取什么
+
+With authorised browser or Canvas access, ask the agent to automatically collect lecture slides, tutorial questions, official solutions and the TXT transcript for every available recording. **Transcript means the written text of the lecture recording / 课堂文字稿**. It captures spoken explanations, examples and corrections that may not appear in the slides. The agent normally enters Lecture Capture/Echo360 or the school's equivalent, opens a recording, and uses Transcript → download TXT when offered. UI labels and availability vary; missing or restricted transcripts are reported.
+
+有浏览器或 Canvas 访问能力时，直接要求 AI 自动抓取上述材料并按科目保存，不需要自己逐节打开录播。只有文件上传能力的助手，则先提供下载好的资料，再生成讲义。
+
 ## Copy a prompt / 复制后开始
 
 > 请使用这个 skill：整理我选定的 Canvas 课程资料，下载每节 lecture 的 TXT transcript，并按教学周生成详细的中英文 HTML。教授在课堂上补充、纠错或强调而 slides 没写出的内容也要放进去，并给出来源。先核对课程和教学周，再开始。

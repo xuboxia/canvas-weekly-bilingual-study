@@ -1,6 +1,6 @@
 # Weekly guide contract (schema v1, renderer 1.1+)
 
-The host agent authors JSON after reading sources. `scripts/render_week.py` validates declared coverage and renders it; it does not call a model or prove correctness. See the working synthetic example at `examples/week-01.json`.
+The host agent authors JSON after reading sources. `scripts/render_week.py` validates declared coverage and renders it; it does not call a model or prove correctness. See the original Coding example at `examples/week-01.json` and Finance example at `examples/finance/week-01.json`; open `examples/index.html` for both.
 
 Set `output_language` to `"zh"`, `"en"` or `"both"`. Omission defaults to `"both"`, so existing v1 guides still work. Every **localized** value follows the selected mode:
 

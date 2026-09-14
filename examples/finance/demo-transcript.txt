@@ -1,0 +1,4 @@
+This is an original synthetic transcript, not the words of a real lecturer.
+Put every payment on a timeline first. The initial 1,000 is paid now, so its discount exponent is zero; future receipts must be moved back to today's date before adding them.
+The undiscounted surplus is 200, but 200 is not NPV. Discounting gives 545.45 for the first receipt and 495.87 for the second, then subtracting today's cost gives 41.32.
+A point beyond the slide: receiving the same positive amount later lowers its present value when the discount rate is positive. Move the second 600 to the end of year 3 and check whether the conclusion still holds.

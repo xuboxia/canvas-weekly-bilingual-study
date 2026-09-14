@@ -22,7 +22,7 @@ Choose `output_language` from the user's requested **guide language**: `zh` (Chi
 
 Read [collection.md](references/collection.md). Prefer an existing authorized connector or logged-in browser. `scripts/canvas_sync.py` is an optional read-only API route **only with an already-configured token**. Never extract browser credentials or create a token implicitly.
 
-Inventory Modules, Home/course pages, accessible Files and relevant external teaching links. Offline Canvas export is efficient when available but may omit Ed workshops and Lecture Capture. Collect questions, published official solutions, datasets, code, slides and notes. Enter every available lecture and download its original TXT transcript. Video binaries are only needed if requested.
+Inventory Modules, Home/course pages, accessible Files and relevant external teaching links. Offline Canvas export is efficient when available but may omit Ed workshops and Lecture Capture. Collect questions, published official solutions, datasets, code, slides and notes. Enter every available lecture and download its original TXT transcript. When explaining this workflow to a student, introduce a transcript as the written text of the lecture recording (课堂文字稿), which can preserve spoken material absent from the slides. Video binaries are only needed if requested.
 
 Record each download's course, stable resource ID/URL, lecture date/title, role, size and SHA-256. Verify completed files, not button clicks. Record gaps as `not_published`, `not_generated`, `access_denied`, `download_failed` or `mapping_unresolved`. Keep question workspaces with their dependent data; distinguish a student's current Challenge from an official Solution.
 
@@ -71,5 +71,7 @@ Write like a careful tutor: connected explanations, concrete examples, readable 
 - Validate the selected language, required text fields, citations, offline assets and local links. Do not mark partial coverage complete.
 - Open representative HTML with the available permitted browser tool on desktop and narrow screen; exercise search, worked-answer disclosure and language controls when present.
 - Deliver an index, course/week links and concise coverage report. Student course materials, transcripts and credentials stay in the student's archive, **never in a publicly shared skill package or website**.
+
+For original Finance and Coding demonstrations, open [the example index](examples/index.html). Finance examples use timelines, assumptions and worked calculations; Coding examples explain state changes and executable identifiers. Adapt to the actual course rather than imposing either subject on unrelated materials.
 
 For compatibility and example prompts read [getting-started.md](references/getting-started.md). Load references only as needed.

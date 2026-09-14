@@ -1,0 +1,4 @@
+Synthetic finance teaching material created for Canvas Study Kit; not a university lecture.
+A fictional project pays 1,000 today and receives 600 at the end of year 1 and 600 at the end of year 2. Assume a 10% effective annual discount rate and no other cash flows.
+Present value is PV_t = CF_t / (1 + r)^t. Net present value is NPV = CF_0 + the sum of discounted future cash flows.
+NPV = -1,000 + 600 / 1.10 + 600 / 1.10^2 = 41.32, rounded to two decimal places. A positive NPV indicates value above the assumed required return in this model.

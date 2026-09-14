@@ -1,0 +1,333 @@
+{
+  "schema_version": 1,
+  "output_language": "both",
+  "course": {
+    "zh": "演示课程：金融学基础",
+    "en": "Demonstration course: finance fundamentals"
+  },
+  "title": {
+    "zh": "现金流、折现与净现值",
+    "en": "Cash flows, discounting and net present value"
+  },
+  "week": 1,
+  "status": "complete",
+  "reviewed": true,
+  "missing": [],
+  "sources": [
+    {
+      "id": "slides",
+      "kind": "slides",
+      "title": {
+        "zh": "原创金融演示 slides",
+        "en": "Original synthetic finance slides"
+      },
+      "path": "demo-slides.txt",
+      "units": [
+        "line 1",
+        "line 2",
+        "line 3",
+        "line 4"
+      ]
+    },
+    {
+      "id": "transcript",
+      "kind": "transcript",
+      "title": {
+        "zh": "原创金融演示课堂文字稿",
+        "en": "Original synthetic finance transcript"
+      },
+      "path": "demo-transcript.txt",
+      "units": [
+        "line 1",
+        "line 2",
+        "line 3",
+        "line 4"
+      ]
+    }
+  ],
+  "lectures": [
+    {
+      "date": "2026-01-05",
+      "title": {
+        "zh": "虚构课堂：同一笔钱，不同的时间",
+        "en": "Fictional lecture: the same amount at different dates"
+      },
+      "sources": [
+        "slides",
+        "transcript"
+      ]
+    }
+  ],
+  "goals": [
+    {
+      "zh": "画出现金流时间线，区分今天和未来的金额。",
+      "en": "Draw a cash-flow timeline and distinguish present from future amounts."
+    },
+    {
+      "zh": "逐笔折现并计算 NPV，解释它与未折现净收入的区别。",
+      "en": "Discount cash flows individually, calculate NPV, and distinguish it from the undiscounted cash-flow surplus."
+    },
+    {
+      "zh": "解释收入推迟如何改变现值，并能回查文字稿中的补充。",
+      "en": "Explain how delayed receipts change present value and trace the transcript addition to its source."
+    }
+  ],
+  "sections": [
+    {
+      "id": "timing",
+      "title": {
+        "zh": "先把每笔钱放到同一条时间线上",
+        "en": "Start by putting every cash flow on a timeline"
+      },
+      "blocks": [
+        {
+          "kind": "slide",
+          "title": {
+            "zh": "一个两年项目",
+            "en": "A two-year project"
+          },
+          "text": {
+            "zh": "本例是原创金融教学演示，并非真实课程或投资项目。假设今天支付 1,000，第 1 年末和第 2 年末各收回 600，适用的有效年折现率为 10%，且没有其他现金流。先固定评价时点为今天（t = 0），再明确支出记负号、收入记正号。这里的 10% 是题目给定的假设，不是对现实投资回报的承诺。",
+            "en": "This is an original finance teaching example, not a real course or investment project. Assume an outflow of 1,000 today, receipts of 600 at the ends of years 1 and 2, a 10% effective annual discount rate, and no other cash flows. Fix the valuation date at today (t = 0), then record outflows as negative and inflows as positive. The 10% rate is an assumption supplied in the problem, not a promised real-world investment return."
+          },
+          "table": {
+            "headers": [
+              {
+                "zh": "时点",
+                "en": "Time"
+              },
+              {
+                "zh": "现金流方向与金额",
+                "en": "Cash flow"
+              }
+            ],
+            "rows": [
+              [
+                {
+                  "zh": "今天，t = 0",
+                  "en": "Today, t = 0"
+                },
+                {
+                  "zh": "支付 1,000",
+                  "en": "Pay 1,000"
+                }
+              ],
+              [
+                {
+                  "zh": "第 1 年末，t = 1",
+                  "en": "End of year 1, t = 1"
+                },
+                {
+                  "zh": "收到 600",
+                  "en": "Receive 600"
+                }
+              ],
+              [
+                {
+                  "zh": "第 2 年末，t = 2",
+                  "en": "End of year 2, t = 2"
+                },
+                {
+                  "zh": "收到 600",
+                  "en": "Receive 600"
+                }
+              ]
+            ]
+          },
+          "citations": [
+            {
+              "source": "slides",
+              "locator": "line 1"
+            },
+            {
+              "source": "slides",
+              "locator": "line 2"
+            },
+            {
+              "source": "transcript",
+              "locator": "line 1"
+            },
+            {
+              "source": "transcript",
+              "locator": "line 2"
+            }
+          ]
+        },
+        {
+          "kind": "teaching_expansion",
+          "title": {
+            "zh": "为什么不能直接把不同年份的钱相加",
+            "en": "Why amounts at different dates need adjustment"
+          },
+          "text": {
+            "zh": "按假设的 10% 年利率，今天的 100 经过一年会变成 110。因此，一年后的 110 折算到今天是 100，而不是 110。折现就是把复利增长反过来计算，让不同日期的金额变成同一时点的可比价值。对于这个项目，同为 600 的两笔收入，到达时间不同，现值也不同。",
+            "en": "At the assumed annual rate of 10%, 100 today grows to 110 after one year. Therefore, 110 received in one year has a present value of 100, not 110. Discounting reverses compounding so that amounts at different dates can be compared at one valuation date. For this project, the two receipts are both 600, but their present values differ because their arrival dates differ."
+          },
+          "citations": []
+        }
+      ]
+    },
+    {
+      "id": "calculate-npv",
+      "title": {
+        "zh": "逐笔折现，再减去今天的投入",
+        "en": "Discount each receipt, then deduct today’s outlay"
+      },
+      "blocks": [
+        {
+          "kind": "slide",
+          "text": {
+            "zh": "用 PV_t = CF_t / (1 + r)^t 逐笔计算。CF_t 是第 t 期现金流，r 是每期折现率，t 是从今天开始经过的期数。现金流按年末给出，所以使用有效年折现率；不要把年利率直接搭配月数。t = 0 的现金流除以 (1 + r)^0 = 1，所以今天支付的 1,000 不需要再折现。",
+            "en": "Compute each receipt using PV_t = CF_t / (1 + r)^t. CF_t is the cash flow at time t, r is the discount rate per period, and t counts the periods from today. Cash flows are specified at year-end, so use the effective annual discount rate; do not combine an annual rate directly with a number of months. At t = 0, (1 + r)^0 = 1, so the 1,000 paid today is not discounted again."
+          },
+          "code": "PV₁ = 600 / 1.10 = 545.4545…\nPV₂ = 600 / 1.10² = 495.8678…\nNPV = −1,000 + PV₁ + PV₂ = 41.3223… ≈ 41.32",
+          "citations": [
+            {
+              "source": "slides",
+              "locator": "line 3"
+            },
+            {
+              "source": "slides",
+              "locator": "line 4"
+            },
+            {
+              "source": "transcript",
+              "locator": "line 2"
+            },
+            {
+              "source": "transcript",
+              "locator": "line 3"
+            }
+          ]
+        },
+        {
+          "kind": "slide",
+          "title": {
+            "zh": "41.32 与 200 分别是什么",
+            "en": "What 41.32 and 200 mean"
+          },
+          "text": {
+            "zh": "600 + 600 − 1,000 = 200 是未折现的净现金流合计，不是 NPV。将未来现金流折算到今天后，它们合计价值约为 1,041.32，扣除今天的成本 1,000，NPV 才是 41.32。在这些现金流与 10% 折现率的假设下，该项目提供约 41.32 的现值盈余；它不是年回报率，也不是将来某日实际收到的 41.32。计算时保留中间精度，最后再四舍五入。",
+            "en": "The sum 600 + 600 − 1,000 = 200 is the undiscounted net cash-flow total, not NPV. The future receipts have a combined present value of about 1,041.32; deducting today’s cost of 1,000 gives an NPV of 41.32. Under these cash-flow assumptions and the 10% discount rate, the project has a present-value surplus of about 41.32. This is neither an annual return percentage nor an actual receipt of 41.32 on a future date. Retain precision in intermediate calculations and round at the end."
+          },
+          "citations": [
+            {
+              "source": "slides",
+              "locator": "line 4"
+            },
+            {
+              "source": "transcript",
+              "locator": "line 3"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "timing-addition",
+      "title": {
+        "zh": "Transcript 补充：金额相同，晚收到也不同",
+        "en": "Transcript addition: the same amount received later is different"
+      },
+      "blocks": [
+        {
+          "kind": "lecturer_addition",
+          "title": {
+            "zh": "原创演示文字稿补充的比较角度",
+            "en": "A comparison added by the synthetic transcript"
+          },
+          "text": {
+            "zh": "演示 slides 只列出原项目的计算；演示 transcript 第 4 行进一步提醒：在折现率为正时，同样一笔正收入越晚收到，现值越低。因此，不能只比较名义收入总额，还要检查每笔钱到达的时间。这一补充来自附带的原创演示文字稿，并不代表任何真实教授的发言。",
+            "en": "The synthetic slides show the original project calculation. Line 4 of the synthetic transcript adds that, at a positive discount rate, a given positive receipt has a lower present value when it arrives later. Comparing nominal receipt totals is therefore insufficient; check the timing of each cash flow as well. This addition comes from the supplied original demonstration transcript, not from any real professor."
+          },
+          "citations": [
+            {
+              "source": "transcript",
+              "locator": "line 4"
+            }
+          ]
+        },
+        {
+          "kind": "teaching_expansion",
+          "title": {
+            "zh": "把这个提醒算完整",
+            "en": "Work through that timing change"
+          },
+          "text": {
+            "zh": "现在只有第二笔 600 从第 2 年末推迟到第 3 年末，其他假设不变。未折现的总收入仍然是 1,200，NPV 还会是正数吗？先保留第一笔收入的位置，再调整第二笔收入的折现指数。",
+            "en": "Now delay only the second receipt of 600 from the end of year 2 to the end of year 3, leaving all other assumptions unchanged. Undiscounted total receipts are still 1,200. Is NPV still positive? Keep the first receipt at its original date and change the discount exponent for the second receipt."
+          },
+          "answer": {
+            "zh": "第一笔现值仍是 600 / 1.10 = 545.4545…；第二笔变成 600 / 1.10³ = 450.7889…；NPV = −1,000 + 545.4545… + 450.7889… = −3.7566… ≈ −3.76。原来约 41.32 的正 NPV 变成了约 −3.76。收入总额没有变，但收款更晚使今天的价值下降。这里的具体计算是对文字稿提醒的教学展开。",
+            "en": "The first present value remains 600 / 1.10 = 545.4545…; the second becomes 600 / 1.10³ = 450.7889…. Thus NPV = −1,000 + 545.4545… + 450.7889… = −3.7566… ≈ −3.76. The original positive NPV of about 41.32 becomes about −3.76. Total nominal receipts have not changed, but the later timing reduces today’s value. This numerical solution is a teaching expansion of the transcript’s observation."
+          },
+          "citations": []
+        }
+      ]
+    }
+  ],
+  "coverage": [
+    {
+      "source": "slides",
+      "locator": "line 1",
+      "section": "timing"
+    },
+    {
+      "source": "slides",
+      "locator": "line 2",
+      "section": "timing"
+    },
+    {
+      "source": "slides",
+      "locator": "line 3",
+      "section": "calculate-npv"
+    },
+    {
+      "source": "slides",
+      "locator": "line 4",
+      "section": "calculate-npv"
+    },
+    {
+      "source": "transcript",
+      "locator": "line 1",
+      "section": "timing"
+    },
+    {
+      "source": "transcript",
+      "locator": "line 2",
+      "section": "timing"
+    },
+    {
+      "source": "transcript",
+      "locator": "line 3",
+      "section": "calculate-npv"
+    },
+    {
+      "source": "transcript",
+      "locator": "line 4",
+      "section": "timing-addition"
+    }
+  ],
+  "glossary": [
+    {
+      "term": {
+        "zh": "现值（PV）",
+        "en": "Present value (PV)"
+      },
+      "definition": {
+        "zh": "将某笔现金流按适用折现率折算到当前评价时点的价值。",
+        "en": "The value of a cash flow at the current valuation date using the applicable discount rate."
+      }
+    },
+    {
+      "term": {
+        "zh": "净现值（NPV）",
+        "en": "Net present value (NPV)"
+      },
+      "definition": {
+        "zh": "在同一个评价时点，将所有现金流按符号折现后相加。",
+        "en": "The sum of all signed cash flows discounted to a common valuation date."
+      }
+    }
+  ]
+}
