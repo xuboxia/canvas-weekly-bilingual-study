@@ -1,11 +1,11 @@
 ---
 name: canvas-weekly-bilingual-study
-description: Collect and organize published Canvas materials and lecture transcripts, then build detailed weekly Chinese–English HTML study guides grounded in slides and what the lecturer actually said. Use for Canvas downloads, weekly bilingual lecture notes, or refreshing a study archive.
+description: Collect and organize published Canvas materials and lecture transcripts, then build detailed weekly HTML study guides in Chinese, English or both, grounded in slides and what the lecturer actually said. Use for Canvas downloads, weekly lecture notes, or refreshing a study archive.
 ---
 
 # Canvas Weekly Bilingual Study
 
-Create an organized source archive and one substantial bilingual HTML guide per **teaching week, per course**, using the host agent's available browser, file and reasoning tools. No particular model vendor is required.
+Create an organized source archive and one substantial HTML guide per **teaching week, per course**, using the host agent's available browser, file and reasoning tools. No particular model vendor is required.
 
 ## Modes
 
@@ -15,6 +15,8 @@ Create an organized source archive and one substantial bilingual HTML guide per 
 - **Refresh**: discover newly published/changed resources and regenerate affected guides, retaining previous sources. Weekly organization does not imply recurring scheduling.
 
 Infer selected courses, semester and destination from the request/context. Ask only when missing information materially changes the result. Never hard-code a university, course ID, student, path, lecture count or semester calendar.
+
+Choose `output_language` from the user's requested **guide language**: `zh` (Chinese only), `en` (English only), or `both` (full Chinese–English). Default to `both` when unspecified; a prompt written in Chinese does not override an explicit request for English output. Preserve the selected mode when refreshing existing guides unless the user changes it. In single-language mode, author only the selected language, including titles, explanations, examples, answers, captions and interface labels. Do not require or generate an unused translation. Collection scope, teaching depth, source coverage and lecturer additions are identical in all three modes.
 
 ## 1. Collect
 
@@ -40,11 +42,11 @@ Read [weekly-authoring.md](references/weekly-authoring.md). Reconcile the actual
 
 For each week, inventory **every lecture**, all assigned slide pages and the complete transcript. Preserve page/slide numbers, real timestamps and stable transcript line numbers. Plain TXT may have no timestamps: cite real line ranges instead of inventing times. Visually inspect scanned pages, diagrams and equations. Empty/poor text extraction requires OCR or visual reading, not omission.
 
-## 3. Teach bilingually, beyond the slides
+## 3. Teach in the selected language, beyond the slides
 
 Build a source coverage matrix before drafting and a professor-additions ledger while reading **all** assigned transcript chunks. Process long weeks in bounded chunks without dropping the remainder.
 
-Every learner-facing knowledge unit needs substantively equivalent **Chinese and English**: definitions, intuition, notation, assumptions, derivations, examples, figure/table explanations, code explanations, pitfalls, questions, answers and recaps. Neither language can be a shortened summary of the other. Preserve official technical terminology and executable identifiers; explain code bilingually without breaking it.
+Every learner-facing knowledge unit needs a full explanation in the selected language(s): definitions, intuition, notation, assumptions, derivations, examples, figure/table explanations, code explanations, pitfalls, questions, answers and recaps. In `both` mode, Chinese and English must be substantively equivalent; neither can be a shortened summary of the other. Preserve official technical terminology and executable identifiers; explain code without breaking it.
 
 For each substantive concept, teach what it means, why/how it works, when it applies, and a worked example or useful contrast. Add reasoning and scaffolding, not padded bullets. Cover all substantive slide topics and integrate lecturer-only examples, corrections and emphasis beside the relevant concepts.
 
@@ -57,17 +59,17 @@ python scripts/render_week.py validate path/to/week-NN.json
 python scripts/render_week.py render path/to/week-NN.json --out path/to/week-NN.html
 ```
 
-The renderer creates one offline HTML with bilingual controls, search, navigation, source links and print styling. **The host AI writes the explanations**; the script does not generate them or prove semantic completeness. Use readable Unicode/plain formulas or embedded rendered figures; do not leave unreadable raw LaTeX as the only representation.
+The renderer creates one offline HTML with search, navigation, source links and print styling. Bilingual guides include a display-language switch; single-language guides contain only the selected text and no switch to an absent translation. **The host AI writes the explanations**; the script does not generate them or prove semantic completeness. Use readable Unicode/plain formulas or embedded rendered figures; do not leave unreadable raw LaTeX as the only representation.
 
 Write like a careful tutor: connected explanations, concrete examples, readable code and restrained page styling. Avoid slogan headings, repetitive recap boxes, decorative gradients, emoji-heavy pages and padded generic introductions.
 
 ## 4. Verify and deliver
 
 - Reconcile expected/downloaded resources and lecture-week mappings; show missing items.
-- Compare coverage against original pages and the transcript additions ledger. Every substantive unit maps to a bilingual section or an explicit reason for exclusion.
-- Check notation, calculations, worked steps, code explanations, language equivalence and professor attributions. Do not execute downloaded course/student code just to read it.
-- Validate citations, bilingual fields, offline assets and local links. Do not mark partial coverage complete.
-- Open representative HTML with the available permitted browser tool on desktop and narrow screen; exercise language controls, search and worked-answer disclosure.
+- Compare coverage against original pages and the transcript additions ledger. Every substantive unit maps to a section in the selected language(s) or an explicit reason for exclusion.
+- Check notation, calculations, worked steps, code explanations and professor attributions; also check language equivalence in `both` mode. Do not execute downloaded course/student code just to read it.
+- Validate the selected language, required text fields, citations, offline assets and local links. Do not mark partial coverage complete.
+- Open representative HTML with the available permitted browser tool on desktop and narrow screen; exercise search, worked-answer disclosure and language controls when present.
 - Deliver an index, course/week links and concise coverage report. Student course materials, transcripts and credentials stay in the student's archive, **never in a publicly shared skill package or website**.
 
 For compatibility and example prompts read [getting-started.md](references/getting-started.md). Load references only as needed.

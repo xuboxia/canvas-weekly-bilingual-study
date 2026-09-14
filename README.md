@@ -1,14 +1,14 @@
 # Canvas Study Kit
 
-**Course files → teaching weeks → detailed Chinese–English HTML guides.**
+**Course files → teaching weeks → detailed HTML guides in English, Chinese or both.**
 
-A reusable AI skill from [H1 Potential](https://h1potential.com/tools). Collect published Canvas slides, tutorial questions, official solutions, code/data and lecture TXT transcripts. Then combine each week's lectures into a detailed bilingual guide, including what the lecturer added beyond the slides.
+A reusable AI skill from [H1 Potential](https://h1potential.com/tools). Collect published Canvas slides, tutorial questions, official solutions, code/data and lecture TXT transcripts. Then combine each week's lectures into a detailed guide in your chosen language, including what the lecturer added beyond the slides.
 
-**课程资料 → 教学周 → 详细中英双语 HTML 讲义。** 按科目整理材料，把 slides 与完整 transcript 对应，保留老师补充的解释、例子和纠错。每个概念、例题和步骤都用中文和英文讲清楚。
+**课程资料 → 教学周 → 中文、英文或中英双语 HTML 讲义。** 按科目整理材料，把 slides 与完整 transcript 对应，保留老师补充的解释、例子和纠错。按所选语言完整讲清每个概念、例题和步骤；默认中英双语。
 
 ## Download and use / 下载与使用
 
-1. [Download the ZIP directly](https://h1potential.com/downloads/canvas-weekly-bilingual-study-v1.0.0.zip), or get it from [GitHub Releases](https://github.com/xuboxia/canvas-weekly-bilingual-study/releases/latest).
+1. [Download the ZIP directly](https://h1potential.com/downloads/canvas-weekly-bilingual-study-v1.1.0.zip), or get it from [GitHub Releases](https://github.com/xuboxia/canvas-weekly-bilingual-study/releases/latest).
 2. Give the package to your AI assistant, or install its `canvas-weekly-bilingual-study` folder using the assistant's supported skill mechanism.
 3. Use the prompt below. The [getting-started guide](references/getting-started.md) explains capabilities and setup choices.
 
@@ -18,13 +18,25 @@ A reusable AI skill from [H1 Potential](https://h1potential.com/tools). Collect 
 
 If Canvas access is unavailable, upload already-downloaded materials and request **study existing files** mode. 已有资料也可以直接使用，无需先连上 Canvas。
 
+## Choose your guide language / 选择讲义语言
+
+Specify the output language in your request; the default is **Chinese–English bilingual**. All three modes include the same full explanations, worked answers and source-backed lecturer additions. English-only and Chinese-only modes author only the requested language; you do not need to generate an unused translation first.
+
+| Mode / 模式 | Add to your prompt / 在提示词中说明 |
+| --- | --- |
+| English only | “Generate the guides entirely in English, including examples, answers, captions and navigation.” |
+| 中文 | “只生成中文版，正文、例题、答案、图注和界面都用中文；保留必要的技术术语和代码标识符。” |
+| 中英双语 / Bilingual | “Generate complete Chinese and English explanations for every concept and worked step.” |
+
+例如：**“使用这个 skill，按周生成纯英文 HTML 讲义，包含教授补充和完整例题。”** 即使提示词用中文，成品也会按明确要求只用英文。双语成品支持显示切换；单语成品只包含所选语言。
+
 ## What it includes
 
 - Browser workflow for Canvas, Lecture Capture/Echo360 and linked teaching resources.
 - Optional read-only Canvas API collector with pagination, hashed downloads and refresh support.
 - Safe ZIP extraction, draft classification, PDF/PPTX/text/notebook extraction helpers.
 - Teaching-week mapping and full-source coverage guidance.
-- A bilingual authoring contract, provenance checks and offline HTML renderer.
+- A language-selectable authoring contract, provenance checks and offline HTML renderer.
 - A small [synthetic example](examples/week-01.html), original demo sources and automated helper tests.
 
 This is an **agent workflow**, not a standalone AI service. Your assistant reads the sources and writes the explanations. The included scripts do deterministic file operations and rendering; they do not call paid model APIs. Browser collection uses whichever authorised browser/connector tools your assistant actually provides. The Canvas API helper does not download Echo360/Ed content automatically; those are separate browser steps.

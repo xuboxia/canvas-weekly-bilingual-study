@@ -2,6 +2,7 @@ import copy
 import io
 import json
 import stat
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -137,6 +138,69 @@ class RendererTest(unittest.TestCase):
     def test_external_source_links_rejected(self):
         self.data['sources'][0]['path'] = 'javascript:alert(1)'
         with self.assertRaises(ValueError): validate(self.data)
+
+    def test_monolingual_content_needs_no_unused_translation(self):
+        def only(value, language):
+            if isinstance(value, dict):
+                if set(value) == {'zh', 'en'}:
+                    return {language: value[language]}
+                return {key: only(item, language) for key, item in value.items()}
+            if isinstance(value, list):
+                return [only(item, language) for item in value]
+            return value
+        for language, other, html_language in [('en', 'zh', 'en'), ('zh', 'en', 'zh-CN')]:
+            with self.subTest(language=language):
+                data = only(self.data, language)
+                data['output_language'] = language
+                data['sections'][0]['blocks'][0]['table'] = {
+                    'headers': [{language: '名称' if language == 'zh' else 'Name'}],
+                    'rows': [[{language: '共享对象' if language == 'zh' else 'Shared object'}]],
+                }
+                document = render(data, ROOT / 'examples')
+                self.assertIn(f'<html lang="{html_language}">', document)
+                self.assertIn(f'<body data-language="{language}">', document)
+                self.assertIn(data['sections'][0]['blocks'][0]['text'][language], document)
+                self.assertNotIn(f'class="lang-{other}"', document)
+                self.assertNotIn('<button data-language=', document)
+                self.assertIn('demo-transcript.txt', document)
+                self.assertIn('source-transcript', document)
+                # Single-language output retains the same completeness requirements.
+                data['coverage'].pop()
+                with self.assertRaises(ValueError): validate(data)
+
+    def test_language_mode_and_required_text_are_validated(self):
+        for mode in ['english', '', None, ['en']]:
+            data = copy.deepcopy(self.data); data['output_language'] = mode
+            with self.assertRaises(ValueError): validate(data)
+        for language in ['en', 'zh']:
+            data = copy.deepcopy(self.data); data['output_language'] = language
+            del data['sections'][0]['blocks'][0]['text'][language]
+            with self.assertRaises(ValueError): validate(data)
+
+    def test_single_language_export_excludes_other_authored_text(self):
+        with tempfile.TemporaryDirectory() as folder:
+            out = Path(folder) / 'english.html'
+            subprocess.run([sys.executable, str(ROOT / 'scripts/render_week.py'), 'render',
+                            str(ROOT / 'examples/week-01.json'), '--language', 'en', '--out', str(out)],
+                           check=True, capture_output=True)
+            document = out.read_text()
+            self.assertIn(self.data['title']['en'], document)
+            self.assertNotIn(self.data['title']['zh'], document)
+            self.assertNotIn('语言', document)
+            self.assertNotIn('参考解答', document)
+
+    def test_single_language_image_caption_and_alt(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            for source in self.data['sources']:
+                (root / source['path']).write_bytes((ROOT / 'examples' / source['path']).read_bytes())
+            import base64
+            (root / 'figure.png').write_bytes(base64.b64decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+a1ZkAAAAASUVORK5CYII='))
+            self.data['output_language'] = 'en'
+            self.data['sections'][0]['blocks'][0]['image'] = {'path': 'figure.png', 'caption': {'en': 'A shared object.'}}
+            document = render(self.data, root)
+            self.assertIn('alt="A shared object."', document)
+            self.assertIn('data:image/png;base64,', document)
 
 
 if __name__ == '__main__': unittest.main()

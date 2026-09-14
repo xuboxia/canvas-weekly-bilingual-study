@@ -14,6 +14,16 @@ Refresh / 更新：
 
 > 更新这些课程新发布的资料和 transcript，只重做来源改变的每周 HTML，保留原文件和缺失说明。
 
+## Choose the output language / 选择生成语言
+
+Use `English only`, `中文` or `Chinese–English bilingual` in your request. Default: bilingual. The language you type the request in is separate from the requested guide language. Single-language mode does not need to generate another translation first; every mode retains the complete explanations, worked answers, transcript additions and source checks.
+
+- **English only:** “Use this skill with my slides and lecture transcripts to create detailed weekly HTML guides entirely in English. Include all worked steps and lecturer additions with sources. Use English for headings, captions, answers and navigation too.”
+- **中文：** “使用这个 skill，结合 slides 和完整 transcript，按教学周生成纯中文 HTML。正文、例题、解答、图注和界面都用中文，纳入教授补充并标注来源，保留必要技术术语和代码标识符。”
+- **中英双语：** “生成完整中英双语讲义，每个概念和解题步骤都在两种语言中讲清楚。”
+
+The author records the choice as `output_language: "en"`, `"zh"` or `"both"` in each guide JSON. Refresh keeps that choice unless you request a change. Bilingual HTML has display-language controls; single-language HTML contains only the chosen language.
+
 ## Compatibility / 兼容方式
 
 - **Codex / Agent Skills-compatible coding agents:** load the folder through the agent's normal skill mechanism. Scripts need Python 3.10+; extraction of PDF/PPTX optionally needs `pypdf`/`python-pptx`.
@@ -33,4 +43,4 @@ python scripts/study_files.py extract lecture.txt --out extracted/transcript.jso
 python scripts/render_week.py render week-03.json --out week-03.html
 ```
 
-The host AI reads sources and writes bilingual teaching content. Scripts perform deterministic file operations and never call a paid model API behind the scenes.
+The host AI reads sources and writes teaching content in the chosen language(s). Scripts perform deterministic file operations and never call a paid model API behind the scenes.

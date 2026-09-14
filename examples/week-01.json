@@ -1,5 +1,6 @@
 {
   "schema_version": 1,
+  "output_language": "both",
   "course": {"zh": "演示课程：对象与引用", "en": "Demonstration course: objects and references"},
   "title": {"zh": "引用复制与对象状态", "en": "Reference copying and object state"},
   "week": 1,

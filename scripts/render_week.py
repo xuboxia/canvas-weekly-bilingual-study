@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate authored bilingual content and render an offline weekly HTML guide. No model calls."""
+"""Render a Chinese, English or bilingual offline weekly guide. No model calls."""
 import argparse
 import base64
 import html
@@ -22,11 +22,18 @@ def require(condition, message):
         raise ValueError(message)
 
 
-def pair(value, label):
-    require(isinstance(value, dict), f'{label}: expected a Chinese/English object')
-    require(all(isinstance(value.get(k), str) and value[k].strip() for k in ('zh', 'en')), f'{label}: both zh and en are required')
-    require(re.search(r'[\u3400-\u9fff]', value['zh']), f'{label}: Chinese explanation is missing')
-    require(re.search(r'[A-Za-z]', value['en']), f'{label}: English explanation is missing')
+def selected_languages(mode):
+    require(isinstance(mode, str) and mode in {'both', 'zh', 'en'}, 'output_language must be both, zh or en')
+    return ('zh', 'en') if mode == 'both' else (mode,)
+
+
+def localized(value, label, languages):
+    require(isinstance(value, dict), f'{label}: expected a language-keyed object')
+    for language in languages:
+        text = value.get(language)
+        require(isinstance(text, str) and text.strip(), f'{label}: {language} is required')
+        pattern = r'[\u3400-\u9fff]' if language == 'zh' else r'[A-Za-z]'
+        require(re.search(pattern, text), f'{label}: {language} explanation is missing')
 
 
 def local_path(value):
@@ -39,6 +46,9 @@ def local_path(value):
 
 def validate(d):
     require(d.get('schema_version') == 1, 'schema_version must be 1')
+    languages = selected_languages(d.get('output_language', 'both'))
+    def pair(value, label):
+        localized(value, label, languages)
     for field in ('course', 'title'):
         pair(d.get(field), field)
     require(type(d.get('week')) is int and d['week'] > 0, 'week must be a positive teaching-week number')
@@ -133,16 +143,16 @@ def esc(text):
     return html.escape(str(text), quote=True)
 
 
-def bi(value, tag='span'):
-    return ''.join(f'<{tag} lang="{lang}" class="lang-{key}">{esc(value[key])}</{tag}>' for key, lang in [('zh', 'zh-CN'), ('en', 'en')])
-
-
-def label(zh, en):
-    return bi({'zh': zh, 'en': en})
-
-
 def render(d, source_dir):
     validate(d)
+    mode = d.get('output_language', 'both')
+    languages = selected_languages(mode)
+    def bi(value, tag='span'):
+        return ''.join(f'<{tag} lang="{"zh-CN" if key == "zh" else "en"}" class="lang-{key}">{esc(value[key])}</{tag}>' for key in languages)
+    def label(zh, en):
+        return bi({'zh': zh, 'en': en})
+    def plain(zh, en):
+        return ' / '.join({'zh': zh, 'en': en}[key] for key in languages)
     source_dir = Path(source_dir).resolve()
     for source in d['sources']:
         require((source_dir / source['path']).is_file(), f'Missing local source: {source["path"]}')
@@ -168,7 +178,7 @@ def render(d, source_dir):
                 require(mime and file.is_file(), 'Use a local PNG/JPEG/WebP figure')
                 require(file.stat().st_size <= 20 * 1024**2, 'Image exceeds the 20 MiB embedding limit')
                 data = base64.b64encode(file.read_bytes()).decode('ascii')
-                alt = item['caption']['zh'] + ' / ' + item['caption']['en']
+                alt = ' / '.join(item['caption'][key] for key in languages)
                 body += f'<figure><img src="data:{mime};base64,{data}" alt="{esc(alt)}"><figcaption>{bi(item["caption"])}</figcaption></figure>'
             if 'answer' in block:
                 body += '<details><summary>' + label('参考解答', 'Worked answer') + '</summary><div class="bilingual">' + bi(block['answer'], 'p') + '</div></details>'
@@ -185,12 +195,14 @@ def render(d, source_dir):
     status = label('已完成来源复核', 'Source review completed') if d['status'] == 'complete' else label('部分完成：请查看缺失与待核对项', 'Partial: check missing and unresolved items')
     css = (ROOT / 'assets/guide.css').read_text(encoding='utf-8')
     js = (ROOT / 'assets/guide.js').read_text(encoding='utf-8')
+    controls = '<div role="group" aria-label="Language / 语言"><button data-language="both" aria-pressed="true">中 / EN</button><button data-language="zh" aria-pressed="false">中文</button><button data-language="en" aria-pressed="false">English</button></div>' if mode == 'both' else ''
+    page_title = ' / '.join(d['course'][key] for key in languages) + f' · {plain("教学周", "Week")} {d["week"]:02d} · ' + ' / '.join(d['title'][key] for key in languages)
     return f'''<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{esc(d['course']['en'])} · Week {d['week']:02d} · {esc(d['title']['zh'])}</title>
-<style>{css}</style></head><body data-language="both">
-<header class="toolbar"><a href="#top">{label('每周学习讲义', 'Weekly study guide')}</a><div role="group" aria-label="Language / 语言"><button data-language="both" aria-pressed="true">中 / EN</button><button data-language="zh" aria-pressed="false">中文</button><button data-language="en" aria-pressed="false">English</button></div><button id="print">{label('打印', 'Print')}</button></header>
-<div class="layout"><aside><label for="search">{label('搜索本周内容', 'Search this week')}</label><input id="search" type="search"><nav aria-label="Contents / 目录">{navigation}</nav></aside>
+<html lang="{'zh-CN' if mode == 'zh' else 'en'}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{esc(page_title)}</title>
+<style>{css}</style></head><body data-language="{mode}">
+<header class="toolbar"><a href="#top">{label('每周学习讲义', 'Weekly study guide')}</a>{controls}<button id="print">{label('打印', 'Print')}</button></header>
+<div class="layout"><aside><label for="search">{label('搜索本周内容', 'Search this week')}</label><input id="search" type="search"><nav aria-label="{esc(plain('目录', 'Contents'))}">{navigation}</nav></aside>
 <main id="top"><header class="intro"><p>{bi(d['course'])} · {label('教学周', 'Teaching week')} {d['week']:02d}</p><h1>{bi(d['title'])}</h1><p class="status">{status}</p>{'<ul class="missing">' + missing + '</ul>' if missing else ''}<h2>{label('本周课堂', 'This week’s lectures')}</h2><ul>{lectures}</ul><h2>{label('学习目标', 'Learning goals')}</h2><ul>{''.join('<li>' + bi(g) + '</li>' for g in d['goals'])}</ul></header>
 <p id="search-empty" hidden>{label('没有匹配的章节。', 'No matching sections.')}</p>{''.join(sections)}
 <section class="glossary"><h2>{label('术语对照', 'Glossary')}</h2><dl>{glossary}</dl></section>
@@ -201,8 +213,11 @@ def render(d, source_dir):
 def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('command', choices=['validate', 'render']); p.add_argument('source'); p.add_argument('--out')
+    p.add_argument('--language', choices=['both', 'zh', 'en'], help='Override output_language; selects existing authored text, never translates it')
     a = p.parse_args(); source = Path(a.source)
     data = json.loads(source.read_text(encoding='utf-8-sig'))
+    if a.language:
+        data['output_language'] = a.language
     validate(data)
     if a.command == 'validate':
         print('Structure and declared coverage validated; semantic review is still required.'); return

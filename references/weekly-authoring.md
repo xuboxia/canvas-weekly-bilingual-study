@@ -12,16 +12,16 @@ For a long lecture, read contiguous overlapping chunks while maintaining a term/
 
 For every lecturer-only addition, retain locally a short evidence excerpt, exact TXT line range or real timestamp, teaching significance and destination section. If wording is uncertain, compare nearby transcript and slides (or audio if available). Label unresolved ambiguity instead of inventing certainty.
 
-## Bilingual depth
+## Language choice and teaching depth
 
-Both languages independently explain definition and conditions, intuition, notation/units, steps with reasons, fully worked examples, and useful boundary/failure cases. Select relevant dimensions: an administrative note does not need a proof. Diagrams need bilingual explanations of axes/nodes/direction and conclusions; code needs inputs, outputs, state changes and design reasoning. Preserve runnable identifiers.
+Use the selected `output_language`: `zh`, `en` or `both` (default). Single-language mode needs only that language; keep the same depth and source coverage. Each selected language independently explains definition and conditions, intuition, notation/units, steps with reasons, fully worked examples, and useful boundary/failure cases. Select relevant dimensions: an administrative note does not need a proof. Diagrams need explanations of axes/nodes/direction and conclusions; code needs inputs, outputs, state changes and design reasoning. Preserve runnable identifiers and official technical terms.
 
-Use side-by-side or consecutively paired Chinese/English explanations. Titles, captions, table headers, warnings, glossary entries, practice prompts and worked answers must also be bilingual. Shared formulas/code are language-neutral; the surrounding explanation is not.
+In `both` mode, use side-by-side or consecutively paired Chinese/English explanations with equivalent depth. In every mode, titles, captions, table headers, warnings, glossary entries, practice prompts and worked answers follow the chosen language(s). Shared formulas/code are language-neutral; the surrounding explanation is not. Do not draft an extra translation for a single-language request.
 
 “More detailed than slides” means missing reasoning and scaffolding, not a word-count target, translation alone or longer bullets. Label original model teaching expansions. Do not invent professor emphasis or claims about exam scope.
 
 ## Weekly artifact and review
 
-Start with learning goals and a list of every lecture, then teach in a sensible order. Put professor additions beside the concept they clarify. Include bilingual worked examples, pitfalls, recap, glossary and reasoned practice answers where useful. Missing sources create visible partial-coverage notices.
+Start with learning goals and a list of every lecture, then teach in a sensible order. Put professor additions beside the concept they clarify. Include worked examples, pitfalls, recap, glossary and reasoned practice answers in the selected language(s) where useful. Missing sources create visible partial-coverage notices.
 
-Compare the finished guide to the original inventory, not its own table of contents. Check both languages independently, verify attributions and at least one full worked calculation. A schema validator cannot prove that every source concept was inventoried or correctly translated. Only mark complete after semantic review and resolution of substantive coverage gaps.
+Compare the finished guide to the original inventory, not its own table of contents. Check each selected language independently, verify attributions and at least one full worked calculation. A schema validator cannot prove that every source concept was inventoried or correctly translated. Only mark complete after semantic review and resolution of substantive coverage gaps.
