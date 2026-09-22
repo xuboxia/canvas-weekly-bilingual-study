@@ -2,13 +2,13 @@
 
 **Course files → teaching weeks → detailed HTML guides in English, Chinese or both.**
 
-A reusable AI skill from [H1 Potential](https://h1potential.com/tools). Ask your browser-enabled AI agent to **automatically collect Canvas lecture slides, tutorial questions, official solutions and lecture transcripts (the written text of the recording)**, and organise the downloaded files by subject. Then combine each week's lectures into a detailed guide in your chosen language, including what the lecturer added beyond the slides.
+A reusable AI skill from [H1 Potential](https://h1potential.com/tools). Ask your browser-enabled AI agent to **automatically collect Canvas lecture slides, tutorial questions, official solutions, Final mock exams/past papers and lecture transcripts (the written text of the recording)**, and organise files by subject into Transcripts, Slides, Tutorials and Final Exam. Then combine each week's lectures into a detailed guide in your chosen language, including what the lecturer added beyond the slides.
 
-**课程资料 → 教学周 → 中文、英文或中英双语 HTML 讲义。** **让具备浏览器或 Canvas 访问能力的 AI 自动抓取 slides、tutorial questions、官方解答和每节录播的 transcript（课堂文字稿）**，按科目分类保存，把 slides 与完整文字稿对应，保留老师补充的解释、例子和纠错。按所选语言完整讲清每个概念、例题和步骤；默认中英双语。
+**课程资料 → 教学周 → 中文、英文或中英双语 HTML 讲义。** **让具备浏览器或 Canvas 访问能力的 AI 自动抓取 slides、tutorial questions、官方解答和每节录播的 transcript（课堂文字稿）**，按科目保存到 Transcripts、Slides、Tutorials、Final Exam 四类，把 slides 与完整文字稿对应，保留老师补充的解释、例子和纠错。按所选语言完整讲清每个概念、例题和步骤；默认中英双语。
 
 ## Download and use / 下载与使用
 
-1. [Download the ZIP directly](https://h1potential.com/downloads/canvas-weekly-bilingual-study-v1.2.0.zip), or get it from [GitHub Releases](https://github.com/xuboxia/canvas-weekly-bilingual-study/releases/latest).
+1. [Download the ZIP directly](https://h1potential.com/downloads/canvas-weekly-bilingual-study-v1.3.0.zip), or get it from [GitHub Releases](https://github.com/xuboxia/canvas-weekly-bilingual-study/releases/latest).
 2. Give the package to your AI assistant, or install its `canvas-weekly-bilingual-study` folder using the assistant's supported skill mechanism.
 3. Use the prompt below. The [getting-started guide](references/getting-started.md) explains capabilities and setup choices.
 
@@ -17,6 +17,14 @@ A reusable AI skill from [H1 Potential](https://h1potential.com/tools). Ask your
 > Use this skill to organise my Canvas materials by subject, collect the TXT transcript for each lecture, and create detailed bilingual Chinese–English HTML guides by teaching week. Explain every concept, example and worked step in both languages. Include source-backed lecturer additions. Write clear, natural teaching prose with restrained formatting.
 
 If Canvas access is unavailable, upload already-downloaded materials and request **study existing files** mode. 已有资料也可以直接使用，无需先连上 Canvas。
+
+## Simple folders / 简单分类
+
+Each subject has **Transcripts · Slides · Tutorials · Final Exam**. Questions, official answers and supporting files for a tutorial stay together. Final includes published mock/sample exams, past papers, answer keys, formula sheets and instructions. Existing MST files remain in `_Archive/Other`; do not collect new MST materials unless requested. Exports and technical records stay under `_Archive`.
+
+每门课只需看四类：课堂文字稿、讲义、习题、期末考试。同一次 tutorial 的题目、答案和配套文件放在一起；Final 收集已发布的模拟卷、历年卷、官方答案和公式表。
+
+**Collect only / 只抓取：** “Use this skill to collect my Canvas materials into Transcripts, Slides, Tutorials and Final Exam. Include published Final mock exams, past papers and official answers. Do not generate HTML.”
 
 ## What is a transcript? / Transcript 是什么？
 

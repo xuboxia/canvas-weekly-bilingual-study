@@ -13,7 +13,7 @@ import urllib.parse as U
 import urllib.request as R
 from html.parser import HTMLParser
 from pathlib import Path
-from study_files import classify, safe_name, sha256
+from study_files import is_midterm, classify, safe_name, sha256
 
 
 def origin(url):
@@ -93,14 +93,17 @@ def error_label(exc):
     return type(exc).__name__
 
 
-def sync_course(client, course_id, root, include_video=False):
+def sync_course(client, course_id, root, include_video=False, include_mst=False):
     cid = str(int(course_id))
     info = client.get(f'/api/v1/courses/{cid}')
     course = Path(root) / f'{cid} - {safe_name(info.get("name", cid))}'
-    meta = course / 'metadata'; meta.mkdir(parents=True, exist_ok=True)
-    original = course / 'Original Exports'; original.mkdir(exist_ok=True)
+    meta = course / '_Archive' / 'metadata'; meta.mkdir(parents=True, exist_ok=True)
+    original = course / '_Archive' / 'Original Exports'; original.mkdir(parents=True, exist_ok=True)
+    for category in ('Transcripts', 'Slides', 'Tutorials', 'Final Exam'): (course / category).mkdir(exist_ok=True)
     previous_path = meta / 'manifest.json'
-    previous = json.loads(previous_path.read_text()) if previous_path.exists() else {}
+    legacy_manifest = course / 'metadata' / 'manifest.json'
+    previous_source = previous_path if previous_path.exists() else legacy_manifest
+    previous = json.loads(previous_source.read_text()) if previous_source.exists() else {}
     old = {str(f['resource_id']): f for f in previous.get('resources', [])}
     report = {'course_id': cid, 'course': info.get('name', cid),
               'checked_at': dt.datetime.now(dt.timezone.utc).isoformat(),
@@ -158,12 +161,19 @@ def sync_course(client, course_id, root, include_video=False):
             name = safe_name(f.get('display_name') or f.get('filename') or fid)
             role = classify(name, ' '.join(entry['context']))
             entry.update({'original_name': name, 'role': role, 'source_updated_at': f.get('updated_at')})
+            if not include_mst and is_midterm(name, ' '.join(entry['context'])):
+                entry.update(status='out_of_scope', reason='midterm_not_requested'); report['resources'].append(entry); continue
             if not include_video and (Path(name).suffix.lower() in {'.mp4', '.mov', '.mkv', '.webm', '.avi', '.m4v'} or str(f.get('content-type', '')).startswith('video/')):
                 entry['status'] = 'out_of_scope'; report['resources'].append(entry); continue
             prev = old.get(fid, {})
             prev_file = course / prev.get('path', '__missing__')
             if prev.get('source_updated_at') and prev.get('source_updated_at') == f.get('updated_at') and prev_file.is_file() and sha256(prev_file) == prev.get('sha256'):
-                entry.update({k:prev[k] for k in ['path','sha256','bytes']}); entry['status'] = 'verified'
+                dest = course / role / prev_file.name
+                dest.parent.mkdir(parents=True, exist_ok=True)
+                if dest != prev_file:
+                    if dest.exists() and sha256(dest) != prev['sha256']: raise ValueError('Reclassification would overwrite another file')
+                    if not dest.exists(): shutil.copy2(prev_file, dest)
+                entry.update(path=dest.relative_to(course).as_posix(), sha256=prev['sha256'], bytes=prev['bytes'], status='verified')
             else:
                 fd, temp = tempfile.mkstemp(prefix='canvas-', suffix='.part', dir=meta); os.close(fd)
                 try:
@@ -178,7 +188,7 @@ def sync_course(client, course_id, root, include_video=False):
                     if 'text/html' in content_type and not name.lower().endswith(('.html','.htm')): raise ValueError('Unexpected HTML login/error response')
                     digest = sha256(temp)
                     dest = course / role / f'{fid}-{digest[:12]}-{name}'
-                    dest.parent.mkdir(exist_ok=True)
+                    dest.parent.mkdir(parents=True, exist_ok=True)
                     if dest.exists(): temp.unlink()
                     else: temp.replace(dest)
                     entry.update({'path': dest.relative_to(course).as_posix(), 'bytes': dest.stat().st_size, 'sha256': digest, 'status': 'verified'})
@@ -201,6 +211,7 @@ def main():
     p.add_argument('command', choices=['courses','sync']); p.add_argument('--base', required=True)
     p.add_argument('--course', action='append', default=[]); p.add_argument('--out', default='Study Archive')
     p.add_argument('--include-video', action='store_true', help='Download attached video files only if the user requested them')
+    p.add_argument('--include-mst', action='store_true', help='Collect MST/midterm files only when requested')
     a = p.parse_args(); token = os.environ.get('CANVAS_TOKEN')
     if not token: p.error('CANVAS_TOKEN is not configured; use the authenticated browser workflow')
     client = Client(a.base, token)
@@ -210,7 +221,7 @@ def main():
     partial = False
     for cid in a.course:
         try:
-            result = sync_course(client,cid,a.out,a.include_video); partial |= result['status']=='partial'; print(json.dumps(result,ensure_ascii=False))
+            result = sync_course(client,cid,a.out,a.include_video,a.include_mst); partial |= result['status']=='partial'; print(json.dumps(result,ensure_ascii=False))
         except Exception as e:
             partial = True; print(json.dumps({'course_id':cid,'status':'failed','reason':error_label(e)}))
     raise SystemExit(2 if partial else 0)

@@ -22,19 +22,25 @@ Choose `output_language` from the user's requested **guide language**: `zh` (Chi
 
 Read [collection.md](references/collection.md). Prefer an existing authorized connector or logged-in browser. `scripts/canvas_sync.py` is an optional read-only API route **only with an already-configured token**. Never extract browser credentials or create a token implicitly.
 
-Inventory Modules, Home/course pages, accessible Files and relevant external teaching links. Offline Canvas export is efficient when available but may omit Ed workshops and Lecture Capture. Collect questions, published official solutions, datasets, code, slides and notes. Enter every available lecture and download its original TXT transcript. When explaining this workflow to a student, introduce a transcript as the written text of the lecture recording (课堂文字稿), which can preserve spoken material absent from the slides. Video binaries are only needed if requested.
+Inventory Modules, Home/course pages, accessible Files and relevant external teaching links. Offline Canvas export is efficient when available but may omit Ed workshops and Lecture Capture. Collect questions, published official solutions, datasets, code, slides and notes. Explicitly inspect Final/Exam Preparation pages for mock/sample exams, past papers, published answer keys, formula sheets and exam instructions. Focus exam collection on Final; collect MST/midterm materials only when requested. Enter every available lecture and download its original TXT transcript. When explaining this workflow to a student, introduce a transcript as the written text of the lecture recording (课堂文字稿), which can preserve spoken material absent from the slides. Video binaries are only needed if requested.
 
 Record each download's course, stable resource ID/URL, lecture date/title, role, size and SHA-256. Verify completed files, not button clicks. Record gaps as `not_published`, `not_generated`, `access_denied`, `download_failed` or `mapping_unresolved`. Keep question workspaces with their dependent data; distinguish a student's current Challenge from an official Solution.
 
-Use `scripts/study_files.py` for safe ZIP extraction, draft classification and text extraction. Suggested layout:
+Use `scripts/study_files.py` for safe ZIP extraction, draft classification and text extraction. Keep the learner-facing source archive simple:
 
 ```text
 Study Archive/<course>/
-  Lecture Materials/       Tutorial Questions/       Tutorial Solutions/
-  Tutorial Files/          Lecture Transcripts/      Original Exports/
-  metadata/manifest.json   metadata/week-map.json    extracted/
-  Weekly Guides/week-01.html ...                     index.html
+  Transcripts/            # original lecture TXT, named by lecture date/time
+  Slides/                 # slides, lecture notes and lecture examples
+  Tutorials/              # each tutorial's questions, answers and supporting files together
+  Final Exam/             # mock/sample exams, past papers, answers and formula sheets
+  _Archive/               # original exports, metadata, other retained materials
+  README.md               # short coverage/missing-file note
 ```
+
+These are the four primary categories; do not split questions, solutions and datasets into separate course-level folders. Use a tutorial/week subfolder only when it keeps related files together; preserve complete code/data workspaces and distinguish Questions from official Solutions inside that subfolder. Keep original filenames where clear. Keep question/answer provenance and detailed roles in metadata, not additional top-level categories. An exam answer key belongs beside its paper in **Final Exam**, never in Tutorials. Do not infer a Final exam from a filename's `final` revision suffix. Put unrequested existing MST files and other retained materials in `_Archive/Other`; never delete them during reorganisation. Preserve ZIPs and source-page bundles intact under `_Archive`.
+
+Week mapping belongs in metadata and readable filenames; it does not require another layer of folders. Put optional generated guides in `Weekly Guides` only in study mode. Collection-only requests stop after the original-file archive and coverage report; no guide HTML is produced.
 
 ## 2. Map teaching weeks
 
