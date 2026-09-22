@@ -13,7 +13,7 @@ from email.message import Message
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'scripts'))
-from study_files import extract_zip, extract, sha256
+from study_files import classify, extract_zip, extract, sha256
 from canvas_sync import Client, ScopedRedirect, sync_course
 from render_week import validate, render
 
@@ -35,6 +35,26 @@ class FakeOpener:
 
 
 class FilesTest(unittest.TestCase):
+    def test_four_folder_classification_and_exam_precedence(self):
+        cases = [
+            ('recording-transcript.txt', '', 'Transcripts'),
+            ('Lecture 3.pdf', '', 'Slides'),
+            ('slides-final.pdf', '', 'Slides'),
+            ('Lecture 4 unit test design.pdf', '', 'Slides'),
+            ('test_data.csv', 'Workshop 3', 'Tutorials'),
+            ('Tutorial 2 questions.pdf', '', 'Tutorials'),
+            ('Tutorial 2 solutions.pdf', '', 'Tutorials'),
+            ('data.csv', 'Workshop 3', 'Tutorials'),
+            ('answer-key.pdf', 'Final Exam / Sample paper', 'Final Exam'),
+            ('2024-sem1-exam.pdf', '', 'Final Exam'),
+            ('paper.pdf', 'Past Papers', 'Final Exam'),
+            ('Second semester test with solutions final.pdf', '', '_Archive/Other'),
+            ('answers.pdf', 'MST practice', '_Archive/Other'),
+        ]
+        for name, context, expected in cases:
+            with self.subTest(name=name, context=context):
+                self.assertEqual(classify(name, context), expected)
+
     def test_zip_preserves_structure_and_rejects_traversal(self):
         with tempfile.TemporaryDirectory() as folder:
             root = Path(folder); archive = root / 'a.zip'
@@ -81,6 +101,30 @@ class CollectorTest(unittest.TestCase):
         redirected = ScopedRedirect().redirect_request(R.Request(base + '/file', headers={'Authorization': 'Bearer test-only-token'}), None, 302, 'redirect', Message(), 'https://storage.example.edu/file')
         self.assertIsNone(redirected.get_header('Authorization'))
 
+    def test_final_papers_and_keys_share_folder_and_midterms_are_opt_in(self):
+        class FakeClient:
+            base = 'https://canvas.example.edu'
+            def get(self, path):
+                if path.endswith('/front_page'): return {'page_id': 1, 'body': '', 'title': 'Home'}
+                return {'name': 'Example Course'}
+            def pages(self, path):
+                if path.endswith('/files'):
+                    return [{'id': n, 'display_name': name, 'url': f'https://storage.example.edu/{n}'} for n, name in [(1, 'Final exam questions.pdf'), (2, 'Final exam answers.pdf'), (3, 'MST test with answers final.pdf')]]
+                return []
+            def request(self, url): return Response(b'%PDF-original', {'Content-Type': 'application/pdf'})
+        with tempfile.TemporaryDirectory() as folder:
+            sync_course(FakeClient(), 1, folder)
+            root = next(Path(folder).iterdir())
+            rows = json.loads((root / '_Archive/metadata/manifest.json').read_text())['resources']
+            self.assertEqual([row['role'] for row in rows[:2]], ['Final Exam', 'Final Exam'])
+            self.assertTrue(all((root / row['path']).is_file() for row in rows[:2]))
+            self.assertEqual(rows[2]['status'], 'out_of_scope')
+            self.assertEqual({p.name for p in root.iterdir()}, {'Transcripts', 'Slides', 'Tutorials', 'Final Exam', '_Archive'})
+            sync_course(FakeClient(), 1, folder, include_mst=True)
+            rows = json.loads((root / '_Archive/metadata/manifest.json').read_text())['resources']
+            self.assertTrue((root / rows[2]['path']).is_file())
+            self.assertTrue(rows[2]['path'].startswith('_Archive/Other/'))
+
     def test_download_identity_refresh_and_bad_pdf(self):
         class FakeClient:
             base = 'https://canvas.example.edu'
@@ -98,7 +142,7 @@ class CollectorTest(unittest.TestCase):
                 return Response(b'%PDF-two' if self.changed else b'%PDF-one', {'Content-Type': 'application/pdf'})
         with tempfile.TemporaryDirectory() as folder:
             client = FakeClient(); sync_course(client, 1, folder)
-            root = next(Path(folder).iterdir()); manifest = root / 'metadata/manifest.json'
+            root = next(Path(folder).iterdir()); manifest = root / '_Archive/metadata/manifest.json'
             first = json.loads(manifest.read_text())['resources']
             self.assertNotEqual(first[0]['path'], first[1]['path'])
             self.assertEqual(client.downloads, 2)

@@ -28,21 +28,29 @@ def safe_name(value):
     return name
 
 
+def is_midterm(path, context=''):
+    s = (str(path) + ' ' + context).lower().replace('_', ' ')
+    return bool(re.search(r'\b(mst|midterm|mid[ -]?semester|lab[ -]?test)\b|\bsemester\b.{0,30}\btest\b|期中', s))
+
+
 def classify(path, context=''):
-    """A reviewable suggestion, never an authoritative teaching-week mapping."""
+    """Suggest one of four learner folders; retain precise provenance in metadata."""
     s = (str(path) + ' ' + context).lower().replace('_', ' ')
     suffix = Path(path).suffix.lower()
-    if 'transcript' in s or 'lecture transcripts' in s:
-        return 'Lecture Transcripts'
-    if re.search(r'\b(solution|solutions|solns|answer|answers)\b|\b\w+sol\.', s):
-        return 'Tutorial Solutions'
-    if re.search(r'\b(tutorial files|datasets?|scaffold)\b', s) or suffix in {'.rmd', '.csv', '.json', '.xml', '.java', '.py', '.kts'}:
-        return 'Tutorial Files'
-    if re.search(r'\b(tutorials?|tute|workshop|labs?)\b', s):
-        return 'Tutorial Questions'
+    if 'transcript' in s or '文字稿' in s:
+        return 'Transcripts'
+    # A file called "mid-semester test with solutions final.pdf" is still MST.
+    if is_midterm(path, context):
+        return '_Archive/Other'
+    if re.search(r'\b(final exam|finals|exams?|mock|past papers?|sample paper|specimen)\b|期末|历年|模拟卷', s):
+        return 'Final Exam'
+    if re.search(r'\b(tutorials?|tute|workshops?|labs?|solutions?|solns?|answers?|scaffold)\b|\b\w+sol\.', s):
+        return 'Tutorials'
     if re.search(r'\b(lectures?|slides?|notes|module\s*\d+|week\s*\d+)\b', s):
-        return 'Lecture Materials'
-    return 'Needs Review'
+        return 'Slides'
+    if re.search(r'\b(datasets?|tutorial files)\b', s) or suffix in {'.rmd', '.csv', '.java', '.py', '.kts', '.ipynb'}:
+        return 'Tutorials'
+    return '_Archive/Needs Review'
 
 
 def extract_zip(source, out, max_bytes=4 * 1024**3):

@@ -2,7 +2,7 @@
 
 ## Teaching-week map
 
-Create a reviewed `metadata/week-map.json` with course/timezone and an explicit `weeks` array. Each week has `week`, `start`, `end`, `evidence` and `lectures`. Each lecture has stable `id`, actual `date`, `title`, slide paths/page ranges, transcript path and `mapping_status`. Use timetable/module evidence, not automatic ISO calendar weeks. Record holidays and unresolved mappings. A two-hour recording is not automatically two lectures. If material crosses weeks, cite the relevant page/transcript ranges in each.
+Create a reviewed `_Archive/metadata/week-map.json` with course/timezone and an explicit `weeks` array. Each week has `week`, `start`, `end`, `evidence` and `lectures`. Each lecture has stable `id`, actual `date`, `title`, slide paths/page ranges, transcript path and `mapping_status`. Use timetable/module evidence, not automatic ISO calendar weeks. Record holidays and unresolved mappings. A two-hour recording is not automatically two lectures. If material crosses weeks, cite the relevant page/transcript ranges in each.
 
 ## Coverage before prose
 
